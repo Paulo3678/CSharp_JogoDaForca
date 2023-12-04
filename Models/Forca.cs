@@ -1,4 +1,6 @@
-﻿namespace JogoDaForca.Models;
+﻿using JogoDaForca.Exceptions;
+
+namespace JogoDaForca.Models;
 
 public class Forca
 {
@@ -10,6 +12,22 @@ public class Forca
 
     public bool CharacterExist(char character)
     {
-        return true;
+        var charExist = DicoveryChars.Where(x => x.Character == character).FirstOrDefault();
+        if (charExist != null) throw new CharacterAlreadyExistException("Caracter já encontrado");
+
+        if (SecretWord.Contains(character))
+        {
+            foreach (char c in SecretWord)
+            {
+                if (c == character)
+                {
+                    Attempts++;
+                }
+            }
+            if (SecretWord.Length == DicoveryChars.Count)
+                Done = true;
+            return true;
+        }
+        return false;
     }
 }
